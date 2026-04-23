@@ -118,13 +118,14 @@ class CalcModal(discord.ui.Modal):
 
         # CORRECT LOGIC
         if selected_xp >= total_xp:
-            status = "✅ Enough"
-            missing_xp = 0
-            extra_xp = selected_xp - total_xp
-        else:
             status = "❌ Not Enough"
             missing_xp = total_xp - selected_xp
             extra_xp = 0
+        else:
+            status = "✅ Enough"
+            missing_xp = 0
+            extra_xp = selected_xp - total_xp
+
 
         embed = discord.Embed(
             title="🎯 XP Result",
@@ -143,13 +144,17 @@ class CalcModal(discord.ui.Modal):
             inline=False
         )
 
+       # =========================
+        # FOOTER (DYNAMIC)
+        # =========================
         if missing_xp > 0:
-            embed.set_footer(text=f"👉 You are short by {missing_xp:,} XP")
-        else:
             embed.set_footer(text="✅ You have enough XP!")
+        else:
+            embed.set_footer(text=f"👉 You are slightly short by {missing_xp:,} XP")
+            
 
         await interaction.response.send_message(embed=embed)
-
+        
 # =========================
 # BUTTON VIEW
 # =========================
@@ -170,23 +175,27 @@ class ImageButtons(discord.ui.View):
         return True
 
     @discord.ui.button(label="Mini Pack", style=discord.ButtonStyle.success)
-    async def mini_btn(self, interaction, button):
+    async def mini_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
         get_user(interaction.user.id)["packs"]["mini"] += 1
+        await interaction.message.edit(view=None)
         await interaction.response.send_modal(CalcModal("mini"))
 
     @discord.ui.button(label="Small Pack", style=discord.ButtonStyle.success)
-    async def small_btn(self, interaction, button):
+    async def small_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
         get_user(interaction.user.id)["packs"]["small"] += 1
+        await interaction.message.edit(view=None)
         await interaction.response.send_modal(CalcModal("small"))
 
     @discord.ui.button(label="Mediant Pack", style=discord.ButtonStyle.primary)
-    async def mediant_btn(self, interaction, button):
+    async def mediant_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
         get_user(interaction.user.id)["packs"]["mediant"] += 1
+        await interaction.message.edit(view=None)
         await interaction.response.send_modal(CalcModal("mediant"))
 
     @discord.ui.button(label="Vast Pack", style=discord.ButtonStyle.danger)
-    async def vast_btn(self, interaction, button):
+    async def vast_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
         get_user(interaction.user.id)["packs"]["vast"] += 1
+        await interaction.message.edit(view=None)
         await interaction.response.send_modal(CalcModal("vast"))
 
 # =========================
@@ -199,39 +208,45 @@ async def on_message(message):
         return
 
     if not message.guild:
-        return await bot.process_commands(message)
+        await bot.process_commands(message)
+        return
 
     if message.channel.category_id != ALLOWED_CATEGORY_ID:
-        return await bot.process_commands(message)
+        await bot.process_commands(message)
+        return
 
     if not has_allowed_role(message.author):
         return
 
     now = time.time()
 
-    images = [
+    image_attachments = [
         att for att in message.attachments
         if att.content_type and "image" in att.content_type.lower()
     ]
 
-    if not (1 <= len(images) <= 4):
+    # ✅ Only allow 1 to 4 images
+    if not (1 <= len(image_attachments) <= 4):
         return
 
+    # ✅ Cooldown to prevent spam/duplicate triggers
     if now - last_trigger[message.author.id] <= 3:
         return
 
     last_trigger[message.author.id] = now
 
+    # ✅ Update stats
     data = get_user(message.author.id)
-    data["total_uploads"] += len(images)
+    data["total_uploads"] += len(image_attachments)
 
+    # ✅ Show buttons
     await message.reply(
-        f"🖼️ {len(images)} image(s) detected! Choose your pack:",
+        f"🖼️ {len(image_attachments)} image(s) detected! Choose your pack:",
         view=ImageButtons(message.author)
     )
 
     await bot.process_commands(message)
-
+    
 # =========================
 # /STATUS
 # =========================
