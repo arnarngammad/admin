@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
-import math
 from flask import Flask
 import os
 from threading import Thread
@@ -98,29 +97,7 @@ class CalcModal(discord.ui.Modal):
         except:
             return await interaction.response.send_message("⚠️ Numbers only!", ephemeral=True)
 
-        # =========================
-        # PERMISSION CHECK
-        # =========================
-        if not has_allowed_role(interaction.user):
-            return await interaction.response.send_message(
-                "❌ Not allowed.", ephemeral=True
-            )
-
-        # =========================
-        # INPUT VALIDATION
-        # =========================
-        try:
-            clvl = int(self.start_lvl.value)
-            xp_had = int(self.current_xp.value or 0)
-            elvl = int(self.end_lvl.value)
-        except:
-            return await interaction.response.send_message(
-                "⚠️ Numbers only!", ephemeral=True
-            )
-
-        # =========================
-        # XP CALCULATION
-        # =========================
+        # XP FORMULA (ONE SYSTEM ONLY)
         total_xp = 0
         lvl = clvl
 
@@ -128,11 +105,8 @@ class CalcModal(discord.ui.Modal):
             total_xp += 50 * (lvl * lvl + 2)
             lvl += 1
 
-        total_xp = max(0, total_xp - xp_had)
+        total_xp = max(0, total_xp - xp_had + end_xp)
 
-        # =========================
-        # PACK VALUES
-        # =========================
         pack_values = {
             "mini": 125000,
             "small": 250000,
@@ -142,22 +116,17 @@ class CalcModal(discord.ui.Modal):
 
         selected_xp = pack_values.get(self.pack, 0)
 
-        # =========================
-        # STATUS LOGIC (IF / ELSE)
-        # =========================
+        # CORRECT LOGIC
         if selected_xp >= total_xp:
-            status = "❌ Not Enough"
-            missing_xp = total_xp - selected_xp
-            extra_xp = 0
-        else:
             status = "✅ Enough"
             missing_xp = 0
             extra_xp = selected_xp - total_xp
+        else:
+            status = "❌ Not Enough"
+            missing_xp = total_xp - selected_xp
+            extra_xp = 0
 
-        # =========================
-        # EMBED RESULT
-        # =========================
-          embed = discord.Embed(
+        embed = discord.Embed(
             title="🎯 XP Result",
             color=discord.Color.orange()
         )
@@ -174,6 +143,118 @@ class CalcModal(discord.ui.Modal):
             inline=False
         )
 
+        if missing_xp > 0:
+            embed.set_footer(text=f"👉 You are short by {missing_xp:,} XP")
+        else:
+            embed.set_footer(text="✅ You have enough XP!")
+
+        await interaction.response.send_message(embed=embed)
+
+# =========================
+# BUTTON VIEW
+# =========================
+class ImageButtons(discord.ui.View):
+    def __init__(self, author):
+        super().__init__(timeout=None)
+        self.author = author
+
+    async def interaction_check(self, interaction):
+        if interaction.user != self.author:
+            await interaction.response.send_message("❌ Not yours!", ephemeral=True)
+            return False
+
+        if not has_allowed_role(interaction.user):
+            await interaction.response.send_message("❌ No permission!", ephemeral=True)
+            return False
+
+        return True
+
+    @discord.ui.button(label="Mini Pack", style=discord.ButtonStyle.success)
+    async def mini_btn(self, interaction, button):
+        get_user(interaction.user.id)["packs"]["mini"] += 1
+        await interaction.response.send_modal(CalcModal("mini"))
+
+    @discord.ui.button(label="Small Pack", style=discord.ButtonStyle.success)
+    async def small_btn(self, interaction, button):
+        get_user(interaction.user.id)["packs"]["small"] += 1
+        await interaction.response.send_modal(CalcModal("small"))
+
+    @discord.ui.button(label="Mediant Pack", style=discord.ButtonStyle.primary)
+    async def mediant_btn(self, interaction, button):
+        get_user(interaction.user.id)["packs"]["mediant"] += 1
+        await interaction.response.send_modal(CalcModal("mediant"))
+
+    @discord.ui.button(label="Vast Pack", style=discord.ButtonStyle.danger)
+    async def vast_btn(self, interaction, button):
+        get_user(interaction.user.id)["packs"]["vast"] += 1
+        await interaction.response.send_modal(CalcModal("vast"))
+
+# =========================
+# IMAGE DETECTION
+# =========================
+@bot.event
+async def on_message(message):
+
+    if message.author.bot:
+        return
+
+    if not message.guild:
+        return await bot.process_commands(message)
+
+    if message.channel.category_id != ALLOWED_CATEGORY_ID:
+        return await bot.process_commands(message)
+
+    if not has_allowed_role(message.author):
+        return
+
+    now = time.time()
+
+    images = [
+        att for att in message.attachments
+        if att.content_type and "image" in att.content_type.lower()
+    ]
+
+    if not (1 <= len(images) <= 4):
+        return
+
+    if now - last_trigger[message.author.id] <= 3:
+        return
+
+    last_trigger[message.author.id] = now
+
+    data = get_user(message.author.id)
+    data["total_uploads"] += len(images)
+
+    await message.reply(
+        f"🖼️ {len(images)} image(s) detected! Choose your pack:",
+        view=ImageButtons(message.author)
+    )
+
+    await bot.process_commands(message)
+
+# =========================
+# STATUS
+# =========================
+@bot.tree.command(name="status")
+async def status(interaction: discord.Interaction):
+
+    if not has_allowed_role(interaction.user):
+        return await interaction.response.send_message("❌ No permission.", ephemeral=True)
+
+    data = user_data.get(interaction.user.id)
+
+    if not data:
+        return await interaction.response.send_message("No data.", ephemeral=True)
+
+    embed = discord.Embed(title="📊 Your Stats", color=discord.Color.blurple())
+
+    embed.add_field(
+        name="Stats",
+        value=f"Uploads: {data['total_uploads']}\nPacks: {data['packs']}",
+        inline=False
+    )
+
+    await interaction.response.send_message(embed=embed)
 
         # =========================
         # FOOTER (DYNAMIC)
@@ -277,6 +358,7 @@ async def on_message(message):
     )
 
     await bot.process_commands(message)
+    
 # =========================
 # /STATUS
 # =========================
@@ -704,6 +786,18 @@ async def on_app_command_error(interaction: discord.Interaction, error):
     else:
         await interaction.response.send_message(f"⚠️ Error: {error}", ephemeral=True)
 
+# =========================
+# READY
+# =========================
+@bot.event
+async def on_ready():
+    global OWNER_ID
+    app_info = await bot.application_info()
+    OWNER_ID = app_info.owner.id
+
+    await bot.tree.sync()
+    print(f"Logged in as {bot.user}")
+    
 # =========================
 # RUN
 # =========================
