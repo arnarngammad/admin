@@ -70,24 +70,42 @@ def get_user(user_id):
 # =========================
 # MODAL
 # =========================
-class CalcModal(discord.ui.Modal):
+async def on_submit(self, interaction: discord.Interaction):
+    try:
+        # Convert inputs to integers
+        start_lvl = int(self.start_lvl.value)
+        current_xp = int(self.current_xp.value)
+        end_lvl = int(self.end_lvl.value)
+        end_xp = int(self.end_xp.value)
 
-    def __init__(self, pack):
-        super().__init__(title="XP Calculator")
-        self.pack = pack
+        # Example: total XP calculation
+        # (Replace this with your own XP formula)
+        def xp_needed(level):
+            return 100 + (level * 10)
 
-        self.start_lvl = discord.ui.TextInput(label="Current Level", required=True)
-        self.current_xp = discord.ui.TextInput(label="Current XP", required=True)
-        self.end_lvl = discord.ui.TextInput(label="End Level", required=True)
-        self.end_xp = discord.ui.TextInput(label="End XP", required=True)
+        total_xp = 0
 
-        self.add_item(self.start_lvl)
-        self.add_item(self.current_xp)
-        self.add_item(self.end_lvl)
-        self.add_item(self.end_xp)
+        # Add remaining XP from current level
+        total_xp += xp_needed(start_lvl) - current_xp
 
-    async def on_submit(self, interaction: discord.Interaction):
+        # Add full levels in between
+        for lvl in range(start_lvl + 1, end_lvl):
+            total_xp += xp_needed(lvl)
 
+        # Add end XP
+        total_xp += end_xp
+
+        await interaction.response.send_message(
+            f"Total XP needed: {total_xp}",
+            ephemeral=True
+        )
+
+    except ValueError:
+        await interaction.response.send_message(
+            "Please enter valid numbers!",
+            ephemeral=True
+        )
+        
         # =========================
         # PERMISSION CHECK
         # =========================
