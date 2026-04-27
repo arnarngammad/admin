@@ -349,8 +349,8 @@ async def collect(interaction: discord.Interaction, user: discord.User):
         PACK_UNCLEAN = {
             "mini": 1525,
             "small": 2675,
-            "mediant": 4680,
-            "vast": 9230
+            "mediant": 4695,
+            "vast": 9245
         }
         
         total_clean = 0
@@ -459,8 +459,8 @@ async def collectpro(interaction: discord.Interaction, user: discord.User):
         PACK_UNCLEAN = {
             "mini": 1000,
             "small": 1625,
-            "mediant": 2780,
-            "vast": 5430
+            "mediant": 2795,
+            "vast": 5445
         }
         
         total_clean = 0
@@ -574,7 +574,7 @@ async def leaderboard(interaction: discord.Interaction):
 
     # 💵 PROFIT PER PACK
     PACK_PROFIT = {
-        "mini": 2,
+        "mini": 3.5,
         "small": 4,
         "mediant": 5.5,
         "vast": 11
@@ -584,8 +584,8 @@ async def leaderboard(interaction: discord.Interaction):
     PACK_UNCLEAN = {
         "mini": 1525,
         "small": 2675,
-        "mediant": 4680,
-        "vast": 9230 
+        "mediant": 4695,
+        "vast": 9245 
      }
 
     leaderboard_list = []
