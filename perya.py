@@ -624,30 +624,28 @@ async def leaderboard(interaction: discord.Interaction):
         medal = ["🥇", "🥈", "🥉"]
         prefix = medal[i-1] if i <= 3 else f"#{i}"
 
-        # 📦 PACK COUNTS
-        mini = packs.get("mini", 0)
-        small = packs.get("small", 0)
-        mediant = packs.get("mediant", 0)
-        vast = packs.get("vast", 0)
+       # 📦 PACK COUNTS
+       mini = packs.get("mini", 0)
+       small = packs.get("small", 0)
+       mediant = packs.get("mediant", 0)
+       vast = packs.get("vast", 0)
 
-        # 💵 PROFIT CALCULATION
-        mini_profit = mini * PACK_PROFIT["mini"]
-        small_profit = small * PACK_PROFIT["small"]
-        mediant_profit = mediant * PACK_PROFIT["mediant"]
-        vast_profit = vast * PACK_PROFIT["vast"]
-        
-        # 💵 UNCLEAN CALCULATION
-        mini_unclean = mini * PACK_UNCLEAN["mini"]
-        small_unclean = small * PACK_UNCLEAN["small"]
-        mediant_unclean = mediant * PACK_UNCLEAN["mediant"]
-        vast_unclean = vast * PACK_UNCLEAN["vast"]
-        
-        
-        total_profit = mini_profit + small_profit + mediant_profit + vast_profit
+       # 💵 PROFIT CALCULATION
+       mini_profit = mini * PACK_PROFIT["mini"]
+       small_profit = small * PACK_PROFIT["small"]
+       mediant_profit = mediant * PACK_PROFIT["mediant"]
+       vast_profit = vast * PACK_PROFIT["vast"]
 
-       if something:
-           x = 1
-           emoji = "<:dl:1495834832524021962>"  # ✅ same indent
+       # 💵 UNCLEAN CALCULATION
+       mini_unclean = mini * PACK_UNCLEAN["mini"]
+       small_unclean = small * PACK_UNCLEAN["small"]
+       mediant_unclean = mediant * PACK_UNCLEAN["mediant"]
+       vast_unclean = vast * PACK_UNCLEAN["vast"]
+
+       total_profit = mini_profit + small_profit + mediant_profit + vast_profit
+
+       # ✅ put emoji here (same indent level)
+       emoji = "<:dl:1495834832524021962>"
 
        description += (
            f"{prefix} **{name}**\n"
