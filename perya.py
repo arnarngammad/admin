@@ -267,6 +267,9 @@ async def status(interaction: discord.Interaction, user: discord.User = None):
         "vast": 55
     }
 
+    # your emoji
+    emoji = "<:dl:1495834832524021962>"
+
     target = interaction.user
 
     if user:
@@ -300,12 +303,12 @@ async def status(interaction: discord.Interaction, user: discord.User = None):
     embed.add_field(
         name=target.name,
         value=(
-            f"💰 Earnings: {earnings} 💎\n"
+            f"💰 Earnings: {earnings} {emoji}\n"
             f"📊 Total Uploads: {data.get('total_uploads', 0)}\n"
-            f"📦 Mini: {packs.get('mini', 0)}\n"
-            f"📦 Small: {packs.get('small', 0)}\n"
-            f"📦 Mediant: {packs.get('mediant', 0)}\n"
-            f"📦 Vast: {packs.get('vast', 0)}"
+            f"🚀 Mini: {packs.get('mini', 0)}\n"
+            f"🌿 Small: {packs.get('small', 0)}\n"
+            f"🔥 Mediant: {packs.get('mediant', 0)}\n"
+            f"👑 Vast: {packs.get('vast', 0)}"
         ),
         inline=False
     )
@@ -334,23 +337,23 @@ async def collect(interaction: discord.Interaction, user: discord.User):
 
         PACK_PRICES = {
             "mini": 15,
-            "small": 22,
-            "mediant": 28,
-            "vast": 55
+            "small": 28,
+            "mediant": 40,
+            "vast": 65
         }
 
         PACK_PROFIT = {
             "mini": 3.5,
-            "small": 4,
-            "mediant": 5.50,
-            "vast": 11
+            "small": 4.5,
+            "mediant": 6.50,
+            "vast": 13
         }
         
         PACK_UNCLEAN = {
-            "mini": 1525,
-            "small": 2675,
-            "mediant": 4695,
-            "vast": 9245
+            "mini": 2075,
+            "small": 3775,
+            "mediant": 6785,
+            "vast": 13455
         }
         
         total_clean = 0
@@ -444,23 +447,23 @@ async def collectpro(interaction: discord.Interaction, user: discord.User):
 
         PACK_PRICES = {
             "mini": 15,
-            "small": 22,
-            "mediant": 28,
-            "vast": 55
+            "small": 28,
+            "mediant": 40,
+            "vast": 65
         }
 
         PACK_PROFIT = {
             "mini": 3.75,
-            "small": 4.50,
+            "small": 5
             "mediant": 6.50,
             "vast": 13
         }
         
         PACK_UNCLEAN = {
-            "mini": 1000,
-            "small": 1625,
-            "mediant": 2795,
-            "vast": 5445
+            "mini": 450,
+            "small": 575,
+            "mediant": 795,
+            "vast": 1445
         }
         
         total_clean = 0
@@ -567,25 +570,25 @@ async def leaderboard(interaction: discord.Interaction):
 
     PACK_PRICES = {
         "mini": 15,
-        "small": 22,
-        "mediant": 28,
-        "vast": 55
+        "small": 28,
+        "mediant": 40,
+        "vast": 65
     }
 
     # 💵 PROFIT PER PACK
     PACK_PROFIT = {
         "mini": 3.5,
-        "small": 4,
-        "mediant": 5.5,
-        "vast": 11
+        "small": 4.5,
+        "mediant": 6.5,
+        "vast": 13
     }
 
     #💵 UNCLEAN PER PACK
     PACK_UNCLEAN = {
-        "mini": 1525,
-        "small": 2675,
-        "mediant": 4695,
-        "vast": 9245 
+        "mini": 2075,
+        "small": 3775,
+        "mediant": 6785,
+        "vast": 13455 
      }
 
     leaderboard_list = []
@@ -642,13 +645,15 @@ async def leaderboard(interaction: discord.Interaction):
         
         total_profit = mini_profit + small_profit + mediant_profit + vast_profit
 
-        description += (
-            f"{prefix} **{name}**\n"
-            f"💰 Earnings: {earnings} 💎 | 📊 {uploads}\n"
-            f"💵 Profit: {total_profit} 💎\n\n"
-            f"🧹 unclean: {mini_unclean + small_unclean + mediant_unclean + vast_unclean} 💎\n"
-            f" Mini:{mini} Small:{small} Mediant:{mediant} Vast:{vast}\n"
-        )
+       emoji = "<:dl:1495834832524021962>"
+
+       description += (
+           f"{prefix} **{name}**\n"
+           f"💰 Earnings: {earnings} {emoji} | 📊 {uploads}\n"
+           f"💵 Profit: {total_profit} {emoji}\n\n"
+           f"🧹 unclean: {mini_unclean + small_unclean + mediant_unclean + vast_unclean} {emoji}\n"
+           f" Mini:{mini} Small:{small} Mediant:{mediant} Vast:{vast}\n"
+       )
 
     embed.description = description or "No data."
 
