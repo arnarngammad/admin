@@ -575,7 +575,6 @@ async def leaderboard(interaction: discord.Interaction):
         "vast": 65
     }
 
-    # 💵 PROFIT PER PACK
     PACK_PROFIT = {
         "mini": 3.5,
         "small": 4.5,
@@ -583,13 +582,12 @@ async def leaderboard(interaction: discord.Interaction):
         "vast": 13
     }
 
-    #💵 UNCLEAN PER PACK
     PACK_UNCLEAN = {
         "mini": 2075,
         "small": 3775,
         "mediant": 6785,
-        "vast": 13455 
-     }
+        "vast": 13455
+    }
 
     leaderboard_list = []
 
@@ -600,14 +598,12 @@ async def leaderboard(interaction: discord.Interaction):
             packs.get(p, 0) * PACK_PRICES[p]
             for p in PACK_PRICES
         )
-       
 
         uploads = data.get("total_uploads", 0)
 
         leaderboard_list.append((user_id, earnings, uploads, packs))
 
     leaderboard_list.sort(key=lambda x: x[1], reverse=True)
-
     top_users = leaderboard_list[:10]
 
     embed = discord.Embed(
@@ -617,6 +613,9 @@ async def leaderboard(interaction: discord.Interaction):
 
     description = ""
 
+    # ✅ define emoji ONCE here (cleaner)
+    emoji = "<:dl:1495834832524021962>"
+
     for i, (user_id, earnings, uploads, packs) in enumerate(top_users, start=1):
         user = bot.get_user(user_id)
         name = user.name if user else f"User {user_id}"
@@ -624,36 +623,33 @@ async def leaderboard(interaction: discord.Interaction):
         medal = ["🥇", "🥈", "🥉"]
         prefix = medal[i-1] if i <= 3 else f"#{i}"
 
-       # 📦 PACK COUNTS
-       mini = packs.get("mini", 0)
-       small = packs.get("small", 0)
-       mediant = packs.get("mediant", 0)
-       vast = packs.get("vast", 0)
+        # 📦 PACK COUNTS
+        mini = packs.get("mini", 0)
+        small = packs.get("small", 0)
+        mediant = packs.get("mediant", 0)
+        vast = packs.get("vast", 0)
 
-       # 💵 PROFIT CALCULATION
-       mini_profit = mini * PACK_PROFIT["mini"]
-       small_profit = small * PACK_PROFIT["small"]
-       mediant_profit = mediant * PACK_PROFIT["mediant"]
-       vast_profit = vast * PACK_PROFIT["vast"]
+        # 💵 PROFIT CALCULATION
+        mini_profit = mini * PACK_PROFIT["mini"]
+        small_profit = small * PACK_PROFIT["small"]
+        mediant_profit = mediant * PACK_PROFIT["mediant"]
+        vast_profit = vast * PACK_PROFIT["vast"]
 
-       # 💵 UNCLEAN CALCULATION
-       mini_unclean = mini * PACK_UNCLEAN["mini"]
-       small_unclean = small * PACK_UNCLEAN["small"]
-       mediant_unclean = mediant * PACK_UNCLEAN["mediant"]
-       vast_unclean = vast * PACK_UNCLEAN["vast"]
+        # 💵 UNCLEAN CALCULATION
+        mini_unclean = mini * PACK_UNCLEAN["mini"]
+        small_unclean = small * PACK_UNCLEAN["small"]
+        mediant_unclean = mediant * PACK_UNCLEAN["mediant"]
+        vast_unclean = vast * PACK_UNCLEAN["vast"]
 
-       total_profit = mini_profit + small_profit + mediant_profit + vast_profit
+        total_profit = mini_profit + small_profit + mediant_profit + vast_profit
 
-       # ✅ put emoji here (same indent level)
-       emoji = "<:dl:1495834832524021962>"
-
-       description += (
-           f"{prefix} **{name}**\n"
-           f"💰 Earnings: {earnings} {emoji} | 📊 {uploads}\n"
-           f"💵 Profit: {total_profit} {emoji}\n\n"
-           f"🧹 unclean: {mini_unclean + small_unclean + mediant_unclean + vast_unclean} {emoji}\n"
-           f" Mini:{mini} Small:{small} Mediant:{mediant} Vast:{vast}\n"
-       )
+        description += (
+            f"{prefix} **{name}**\n"
+            f"💰 Earnings: {earnings} {emoji} | 📊 {uploads}\n"
+            f"💵 Profit: {total_profit} {emoji}\n\n"
+            f"🧹 unclean: {mini_unclean + small_unclean + mediant_unclean + vast_unclean} {emoji}\n"
+            f" Mini:{mini} Small:{small} Mediant:{mediant} Vast:{vast}\n"
+        )
 
     embed.description = description or "No data."
 
