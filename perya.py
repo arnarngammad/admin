@@ -645,7 +645,9 @@ async def leaderboard(interaction: discord.Interaction):
         
         total_profit = mini_profit + small_profit + mediant_profit + vast_profit
 
-       emoji = "<:dl:1495834832524021962>"
+       if something:
+           x = 1
+           emoji = "<:dl:1495834832524021962>"  # ✅ same indent
 
        description += (
            f"{prefix} **{name}**\n"
