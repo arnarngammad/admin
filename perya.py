@@ -264,7 +264,7 @@ async def status(interaction: discord.Interaction, user: discord.User = None):
         "mini": 15,
         "small": 28,
         "mediant": 40,
-        "vast": 65
+        "vast": 70
     }
 
     # your emoji
@@ -339,21 +339,21 @@ async def collect(interaction: discord.Interaction, user: discord.User):
             "mini": 15,
             "small": 28,
             "mediant": 40,
-            "vast": 65
+            "vast": 70
         }
 
         PACK_PROFIT = {
             "mini": 3.5,
             "small": 4.5,
             "mediant": 6.5,
-            "vast": 13
+            "vast": 15
         }
         
         PACK_UNCLEAN = {
             "mini": 2075,
             "small": 3775,
             "mediant": 6785,
-            "vast": 13455
+            "vast": 13655
         }
         
         total_clean = 0
@@ -449,21 +449,21 @@ async def collectpro(interaction: discord.Interaction, user: discord.User):
             "mini": 15,
             "small": 28,
             "mediant": 40,
-            "vast": 65
+            "vast": 70
         }
 
         PACK_PROFIT = {
             "mini": 3.75,
             "small": 5,
-            "mediant": 6.5,
-            "vast": 13
+            "mediant": 7.5,
+            "vast": 17
         }
         
         PACK_UNCLEAN = {
             "mini": 450,
             "small": 575,
-            "mediant": 795,
-            "vast": 1445
+            "mediant": 895,
+            "vast": 1845
         }
         
         total_clean = 0
@@ -572,21 +572,21 @@ async def leaderboard(interaction: discord.Interaction):
         "mini": 15,
         "small": 28,
         "mediant": 40,
-        "vast": 65
+        "vast": 70
     }
 
     PACK_PROFIT = {
         "mini": 3.5,
         "small": 4.5,
         "mediant": 6.5,
-        "vast": 13
+        "vast": 15
     }
 
     PACK_UNCLEAN = {
         "mini": 2075,
         "small": 3775,
         "mediant": 6785,
-        "vast": 13455
+        "vast": 13655
     }
 
     leaderboard_list = []
