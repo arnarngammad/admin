@@ -262,9 +262,9 @@ async def status(interaction: discord.Interaction, user: discord.User = None):
 
     PACK_PRICES = {
         "mini": 15,
-        "small": 28,
-        "mediant": 40,
-        "vast": 70
+        "small": 25,
+        "mediant": 35,
+        "vast": 60
     }
 
     # your emoji
@@ -337,9 +337,9 @@ async def collect(interaction: discord.Interaction, user: discord.User):
 
         PACK_PRICES = {
             "mini": 15,
-            "small": 28,
-            "mediant": 40,
-            "vast": 70
+            "small": 25,
+            "mediant": 30,
+            "vast": 60
         }
 
         PACK_PROFIT = {
@@ -350,10 +350,10 @@ async def collect(interaction: discord.Interaction, user: discord.User):
         }
         
         PACK_UNCLEAN = {
-            "mini": 2075,
-            "small": 3775,
-            "mediant": 6785,
-            "vast": 13655
+            "mini": 975,
+            "small": 1625,
+            "mediant": 2795,
+            "vast": 5645
         }
         
         total_clean = 0
@@ -447,9 +447,9 @@ async def collectpro(interaction: discord.Interaction, user: discord.User):
 
         PACK_PRICES = {
             "mini": 15,
-            "small": 28,
-            "mediant": 40,
-            "vast": 70
+            "small": 25,
+            "mediant": 35,
+            "vast": 60
         }
 
         PACK_PROFIT = {
@@ -462,8 +462,8 @@ async def collectpro(interaction: discord.Interaction, user: discord.User):
         PACK_UNCLEAN = {
             "mini": 450,
             "small": 575,
-            "mediant": 895,
-            "vast": 1845
+            "mediant": 1145,
+            "vast": 2145
         }
         
         total_clean = 0
@@ -570,9 +570,9 @@ async def leaderboard(interaction: discord.Interaction):
 
     PACK_PRICES = {
         "mini": 15,
-        "small": 28,
-        "mediant": 40,
-        "vast": 70
+        "small": 25,
+        "mediant": 35,
+        "vast": 60
     }
 
     PACK_PROFIT = {
@@ -583,10 +583,10 @@ async def leaderboard(interaction: discord.Interaction):
     }
 
     PACK_UNCLEAN = {
-        "mini": 2075,
-        "small": 3775,
-        "mediant": 6785,
-        "vast": 13655
+        "mini": 975,
+        "small": 1625,
+        "mediant": 2795,
+        "vast": 5645
     }
 
     leaderboard_list = []
