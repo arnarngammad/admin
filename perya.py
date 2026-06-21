@@ -345,15 +345,15 @@ async def collect(interaction: discord.Interaction, user: discord.User):
         PACK_PROFIT = {
             "mini": 3.5,
             "small": 4.5,
-            "mediant": 6.5,
-            "vast": 15
+            "mediant": 6,
+            "vast": 12
         }
         
         PACK_UNCLEAN = {
             "mini": 975,
             "small": 1625,
-            "mediant": 2795,
-            "vast": 5645
+            "mediant": 2745,
+            "vast": 5345
         }
         
         total_clean = 0
@@ -462,8 +462,8 @@ async def collectpro(interaction: discord.Interaction, user: discord.User):
         PACK_UNCLEAN = {
             "mini": 450,
             "small": 575,
-            "mediant": 1145,
-            "vast": 2145
+            "mediant": 895,
+            "vast": 1845
         }
         
         total_clean = 0
@@ -547,121 +547,6 @@ async def on_ready():
     synced = await bot.tree.sync()
     print(f"✅ Synced {len(synced)} commands")
     print(f"🤖 Logged in as {bot.user}")
-
-# =========================
-# LEADERBOARD CHECK
-# =========================
-
-def is_owner_check(interaction: discord.Interaction) -> bool:
-    return interaction.user.id == OWNER_ID
-
-# =========================
-# /LEADERBOARD (OWNER ONLY + PROFIT)
-# =========================
-@bot.tree.command(name="leaderboard", description="View top users")
-@app_commands.check(is_owner_check)
-async def leaderboard(interaction: discord.Interaction):
-
-    if not user_data:
-        return await interaction.response.send_message(
-            "⚠️ No data available.",
-            ephemeral=True
-        )
-
-    PACK_PRICES = {
-        "mini": 15,
-        "small": 20,
-        "mediant": 25,
-        "vast": 45
-    }
-
-    PACK_PROFIT = {
-        "mini": 3.5,
-        "small": 4.5,
-        "mediant": 6.5,
-        "vast": 15
-    }
-
-    PACK_UNCLEAN = {
-        "mini": 975,
-        "small": 1625,
-        "mediant": 2795,
-        "vast": 5645
-    }
-
-    leaderboard_list = []
-
-    for user_id, data in user_data.items():
-        packs = data.get("packs", {})
-
-        earnings = sum(
-            packs.get(p, 0) * PACK_PRICES[p]
-            for p in PACK_PRICES
-        )
-
-        uploads = data.get("total_uploads", 0)
-
-        leaderboard_list.append((user_id, earnings, uploads, packs))
-
-    leaderboard_list.sort(key=lambda x: x[1], reverse=True)
-    top_users = leaderboard_list[:10]
-
-    embed = discord.Embed(
-        title="🏆 Leaderboard (Top 10)",
-        color=discord.Color.gold()
-    )
-
-    description = ""
-
-    # ✅ define emoji ONCE here (cleaner)
-    emoji = "<:dl:1495834832524021962>"
-
-    for i, (user_id, earnings, uploads, packs) in enumerate(top_users, start=1):
-        user = bot.get_user(user_id)
-        name = user.name if user else f"User {user_id}"
-
-        medal = ["🥇", "🥈", "🥉"]
-        prefix = medal[i-1] if i <= 3 else f"#{i}"
-
-        # 📦 PACK COUNTS
-        mini = packs.get("mini", 0)
-        small = packs.get("small", 0)
-        mediant = packs.get("mediant", 0)
-        vast = packs.get("vast", 0)
-
-        # 💵 PROFIT CALCULATION
-        mini_profit = mini * PACK_PROFIT["mini"]
-        small_profit = small * PACK_PROFIT["small"]
-        mediant_profit = mediant * PACK_PROFIT["mediant"]
-        vast_profit = vast * PACK_PROFIT["vast"]
-
-        # 💵 UNCLEAN CALCULATION
-        mini_unclean = mini * PACK_UNCLEAN["mini"]
-        small_unclean = small * PACK_UNCLEAN["small"]
-        mediant_unclean = mediant * PACK_UNCLEAN["mediant"]
-        vast_unclean = vast * PACK_UNCLEAN["vast"]
-
-        total_profit = mini_profit + small_profit + mediant_profit + vast_profit
-
-        description += (
-            f"{prefix} **{name}**\n"
-            f"💰 Earnings: {earnings} {emoji} | 📊 {uploads}\n"
-            f"💵 Profit: {total_profit} {emoji}\n\n"
-            f"🧹 unclean: {mini_unclean + small_unclean + mediant_unclean + vast_unclean} {emoji}\n"
-            f" Mini:{mini} Small:{small} Mediant:{mediant} Vast:{vast}\n"
-        )
-
-    embed.description = description or "No data."
-
-    await interaction.response.send_message(embed=embed)
-
-# =========================
-# ERROR HANDLER (HIDE COMMAND)
-# =========================
-@leaderboard.error
-async def leaderboard_error(interaction: discord.Interaction, error):
-    if isinstance(error, app_commands.errors.CheckFailure):
-        return  # silently ignore
 
 # =========================
 # command
